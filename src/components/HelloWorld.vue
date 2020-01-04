@@ -1,58 +1,71 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-content>
+        <v-container>
+          <v-row>
+            <v-col>
+          <v-form>
+          <input v-model="interest" placeholder="interest rate">
+          <input v-model="monthly" placeholder="monthly payment">
+          <input v-model="age" placeholder="Current age">
+          <input v-model="retAge" placeholder="Retirement age">
+          <input v-model="income" placeholder="Desired Income">
+          <input v-model="lifeExpectancy" placeholder="Life expectancy">
+          </v-form>
+          </v-col>
+           <v-col>
+            <div>
+                <p>monthly interest: {{monthlyInterest}}</p>
+                <p>years till retirment: {{yearsTill}}</p>
+                <p>present value at retirement: {{presentValueAtRet}}</p>
+                <p>aAngleN: {{aAngleN}}</p>
+                <p>sAngleN: {{sAngleN}}</p>
+                <p>yearly payments: {{yearlyPayment}}</p>
+            </div>
+            </v-col>
+            </v-row>
+
+          
+            
+       
+        </v-container>
+      </v-content>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  
+      
+    data() {
+        return {
+            interest: '', age: '', retAge: '', income: '', monthlySavings: '', lifeExpectancy: ''
+        }
+     },
+    computed: {
+      monthlyInterest: function(){
+        return ( ((1+this.interest/100) ** (1/12) -1) * 100 )
+        },
+          yearsTill: function() {
+              return (this.retAge - this.age)
+          },
+          aAngleN: function() {
+              let i = this.interest/100;
+              let v = 1/(1 + i);
+              let yearsOfRetirement = this.lifeExpectancy - this.retAge;
+              return ( (1 - v ** yearsOfRetirement) / i )
+          },
+          presentValueAtRet: function() {
+             
+              return ( this.income * this.aAngleN )
+          },
+          sAngleN: function() {
+              let i = this.interest / 100
+              let accu = (1 + i);
+              return ( (accu ** this.yearsTill - 1) / i );
+          }, 
+          yearlyPayment: function() {
+            return (this.presentValueAtRet / this.sAngleN) 
+          }, 
+          
+          }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
